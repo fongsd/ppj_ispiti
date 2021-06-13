@@ -4,8 +4,8 @@ izvrsni: lex.yy.o parser.o
 lex.yy.o: lex.yy.c parser.tab.hpp
 		g++ -Wall -c -o $@ $<
 
-lex.yy.c: lexer.lex	
-	flex -i lexer.lex
+lex.yy.c: lexer.lex
+	flex lexer.lex
 
 parser.o: parser.tab.cpp parser.tab.hpp	
 	g++ -Wall -c -o $@ $<

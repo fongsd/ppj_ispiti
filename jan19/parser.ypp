@@ -4,13 +4,13 @@
     #include <cstdlib>
     #include <string>
     #include <map>
-
+    #include <vector>
     using namespace std;
 
     map<string, int> promenljive;
     map<string, vector<int>* > liste;
 
-    void yyerror(string *s)
+    void yyerror(string s)
     {
         cerr<<s<<endl;
         exit(EXIT_FAILURE);
@@ -22,11 +22,11 @@
         {
             printf("%d", broj);
         }
-        if (osnova == 8)
+        else if (osnova == 8)
         {
             printf("%o", broj);
         }
-        if (osnova == 16)
+        else if (osnova == 16)
         {
             printf("%x", broj);
         }
@@ -46,35 +46,89 @@
     vector<int>* elementi;
 };
 
+%left '+' '-';
+%left '*' '/';
+%left '=';
+%left left_shift right_shift;
 %token <d> broj;
 %token <s> id_token list_id;
 %token left_shift right_shift rel_op print_token int_token;
-%start Pocetak;
-%type <
+
+%type <d> izraz;
 %%
 
-Pocetak: nizNaredbi;
+
 
 nizNaredbi: nizNaredbi naredba '\n';
-
-naredba: int_token id_token broj {
-    promenljive[*$2] = $3;
+| naredba '\n' ;
+naredba: int_token id_token '=' izraz ';' {
+    promenljive[*$2] = $4;
     delete $2;
 }
-| print_token '(' id_token ',' broj ')' {
-    auto it = promenljive.find(*$3);
-
+| broj {
+    printf("%d\n", $1);
+}
+| print_token '(' izraz ',' broj ')' ';' {
+    stampaj($3, $5);
+}
+| int_token id_token ';' {
+    auto it = promenljive.find(*$2);
+    
     if (it == promenljive.end())
     {
-        yyerror("nedefinisana promenljiva\n");
+        yyerror("nedefinisana promenljiva");
     }
     else
     {
-        stampaj(it->second, $5);
-        delete(*$3);
+        printf("%d\n", it->second);
+        promenljive[*$2] = 0;
+        delete $2;
     }
 }
+| id_token '=' izraz ';' {
+    promenljive[*$1] = $3;
+    delete $1;
+}
 ;
+
+izraz: broj {
+    $$ = $1;
+}
+| izraz '+' izraz {
+    $$ = $1 + $3;
+}
+| izraz '-' izraz {
+    $$ = $1 - $3;
+}
+| izraz '*' izraz {
+    $$ = $1 * $3;
+}
+| izraz '/' izraz {
+    $$ = $1 / $3;
+}
+| id_token { 
+    auto it = promenljive.find(*$1);
+    
+    if (it == promenljive.end())
+    {
+        yyerror("nedefinisana promenljiva");
+    }
+    else
+    {
+        $$ = it->second;
+        delete $1;
+    }
+}
+| izraz left_shift izraz {
+    $$ = $1 << $3;
+} 
+| '(' izraz ')' {
+    $$ = $2;
+}
+| '~' '(' izraz ')' ';'
+{
+    $$ = ~$3;
+}
 %%
 
 int main()

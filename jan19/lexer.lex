@@ -7,7 +7,7 @@
     #include <iostream>
     #include <cstdlib>
     #include <string>
-
+    #include <vector>
     using namespace std;
 
     #include "parser.tab.hpp"
@@ -23,8 +23,8 @@
     return broj;
 }
 
-0x[1-9ABCDEF]+[0-9A-F] { 
-    sscanf(yyext, "%x", &yylval.d);
+0x([1-9ABCDEF][0-9A-F]*) { 
+    sscanf(yytext, "%x", &yylval.d);
     return broj;
 }
 
@@ -33,7 +33,7 @@
     return broj;
 }
 
-[+*/&|%~,;()\[\]=-] {
+[+*/&|%~,;)(\[\]=\n-] {
     return *yytext;
 }
 
@@ -52,7 +52,7 @@
     return print_token;
 }
 
-_[a-zA-Z][a-zA-Z0-9]+ {
+[_][a-zA-Z][a-zA-Z0-9]* {
     yylval.s = new string(yytext);
     return id_token;
 }
@@ -62,7 +62,7 @@ l[a-zA-Z0-9_]+ {
     return list_id;
 }
 
-[ \t\n] {
+[ \t] {
 
 }
 
