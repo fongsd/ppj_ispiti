@@ -138,7 +138,9 @@ extern int yydebug;
     id_token = 259,
     broj = 260,
     print_token = 261,
-    op_dodele = 262
+    op_dodele = 262,
+    lower_token = 263,
+    upper_token = 264
   };
 #endif
 
@@ -151,7 +153,7 @@ union YYSTYPE
     string *s;
     int d;
 
-#line 155 "parser.tab.cpp"
+#line 157 "parser.tab.cpp"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -470,19 +472,19 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  7
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   15
+#define YYLAST   43
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  11
+#define YYNTOKENS  19
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  7
+#define YYNRULES  15
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  17
+#define YYNSTATES  41
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   262
+#define YYMAXUTOK   265
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -495,15 +497,15 @@ union yyalloc
 static const yytype_int8 yytranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       8,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+      12,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       9,    10,     2,     2,     2,     2,     2,     2,     2,     2,
+      13,    14,    10,    11,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,    16,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,    15,     2,    17,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -520,14 +522,15 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7
+       5,     6,     7,     8,     9,    18
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,    32,    32,    33,    35,    39,    53,    57
+       0,    33,    33,    34,    36,    40,    47,    59,    73,    84,
+      95,   101,   112,   128,   145,   164
 };
 #endif
 
@@ -537,7 +540,8 @@ static const yytype_int8 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "niska_token", "id_token", "broj",
-  "print_token", "op_dodele", "'\\n'", "'('", "')'", "$accept",
+  "print_token", "op_dodele", "lower_token", "upper_token", "'*'", "'+'",
+  "'\\n'", "'('", "')'", "'['", "':'", "']'", "\"reverse\"", "$accept",
   "NizNaredbi", "naredba", "izraz", YY_NULLPTR
 };
 #endif
@@ -547,12 +551,12 @@ static const char *const yytname[] =
    (internal) symbol number NUM (which must be that of a token).  */
 static const yytype_int16 yytoknum[] =
 {
-       0,   256,   257,   258,   259,   260,   261,   262,    10,    40,
-      41
+       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
+      42,    43,    10,    40,    41,    91,    58,    93,   265
 };
 # endif
 
-#define YYPACT_NINF (-6)
+#define YYPACT_NINF (-9)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -566,8 +570,11 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -3,    -5,    -4,     0,     1,     7,     4,    -6,     3,    -6,
-      -6,    -6,     2,     5,    -6,    -6,    -6
+      20,     2,    -8,     8,    18,    -2,    -2,    -9,    19,    -9,
+      -9,    -5,    22,    -2,    16,    17,     9,    -9,    -1,    -2,
+      11,    30,    29,    -2,    -9,    21,    31,    -9,    25,    24,
+      -9,    -9,     1,    23,    34,    -9,    26,    -9,    -9,    -9,
+      -9
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -576,19 +583,22 @@ static const yytype_int8 yypact[] =
 static const yytype_int8 yydefact[] =
 {
        0,     0,     0,     0,     0,     0,     0,     1,     0,     3,
-       7,     4,     0,     0,     2,     5,     6
+       6,     7,     0,     0,     0,     4,     0,     2,     0,     0,
+       0,     0,     0,     0,     5,     0,     0,     9,     0,     0,
+       8,    10,     0,     0,     0,    15,     0,    13,    14,    11,
+      12
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -6,    -6,    10,     8
+      -9,    -9,    38,    -6
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     3,     4,    11
+      -1,     3,     4,    15
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -596,34 +606,45 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       7,     1,     5,     2,     1,     6,     2,    10,    12,     9,
-      10,    14,    15,     8,    13,    16
+      16,    10,    11,    12,    25,     6,    36,    20,     7,     5,
+      18,    13,     1,    27,     2,    26,    14,    31,    37,    22,
+      23,    22,    23,    24,     1,    28,     2,    22,    23,    21,
+       9,    17,    19,    29,    30,    34,    33,    32,    35,    39,
+      38,     8,     0,    40
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,     4,     7,     6,     4,     9,     6,     3,     4,     8,
-       3,     8,    10,     3,     6,    10
+       6,     3,     4,     5,     5,    13,     5,    13,     0,     7,
+      15,    13,     4,    19,     6,    16,    18,    23,    17,    10,
+      11,    10,    11,    14,     4,    14,     6,    10,    11,    13,
+      12,    12,    10,     3,     5,    10,     5,    16,    14,     5,
+      17,     3,    -1,    17
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     4,     6,    12,    13,     7,     9,     0,    13,     8,
-       3,    14,     4,    14,     8,    10,    10
+       0,     4,     6,    20,    21,     7,    13,     0,    21,    12,
+       3,     4,     5,    13,    18,    22,    22,    12,    15,    10,
+      22,    13,    10,    11,    14,     5,    16,    22,    14,     3,
+       5,    22,    16,     5,    10,    14,     5,    17,    17,     5,
+      17
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    11,    12,    12,    13,    13,    13,    14
+       0,    19,    20,    20,    21,    21,    22,    22,    22,    22,
+      22,    22,    22,    22,    22,    22
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     3,     2,     3,     4,     4,     1
+       0,     2,     3,     2,     3,     4,     1,     1,     3,     3,
+       3,     5,     6,     5,     5,     4
 };
 
 
@@ -1319,52 +1340,205 @@ yyreduce:
   switch (yyn)
     {
   case 4:
-#line 35 "parser.ypp"
-                                  {
+#line 36 "parser.ypp"
+                                  { 
     promenljive[*(yyvsp[-2].s)] = *(yyvsp[0].s);
     delete (yyvsp[-2].s);
 }
-#line 1328 "parser.tab.cpp"
+#line 1349 "parser.tab.cpp"
     break;
 
   case 5:
-#line 39 "parser.ypp"
-                               {
-    auto it = promenljive.find(*(yyvsp[-1].s));
-    
-    if (it == promenljive.end()) 
-    {
-        yyerror("nedefinisana promenljive");
-    }
-    else
-    {
-        string b = it->second;
-//         strncpy(b, it->second, strlen(it->second) - 2);
-        cout<<b.substr(1, b.length() - 2)<<endl;
-    }
+#line 40 "parser.ypp"
+                            {
+//     cout<<*$3<<endl;
+//     cout<<*$3<<endl;
+    cout<<*(yyvsp[-1].s)<<endl;
 }
-#line 1347 "parser.tab.cpp"
+#line 1359 "parser.tab.cpp"
     break;
 
   case 6:
-#line 53 "parser.ypp"
-                            {
-    cout<< (yyvsp[-1].s)<<endl;
+#line 47 "parser.ypp"
+                   {
+//     cout<<*$1<<endl;
+//     $$ = *$1;   
+    string *b = (yyvsp[0].s);
+    b->pop_back();
+//     cout<<*b<<endl;
+//     string a = "123";
+//     string c ="adas123214dAS";
+//     cout<<a + c<<endl;
+    (yyval.s) = new string(*b);
+    delete (yyvsp[0].s);
 }
-#line 1355 "parser.tab.cpp"
+#line 1376 "parser.tab.cpp"
     break;
 
   case 7:
-#line 57 "parser.ypp"
-                   {
-    string b = new string( *(yyvsp[0].s));
-    (yyval.s) = &b;
+#line 59 "parser.ypp"
+           {
+
+    auto it = promenljive.find(*(yyvsp[0].s));
+    
+    if (it == promenljive.end()) 
+    {
+        yyerror("failed");
+    }
+    else
+    {
+        (yyval.s) = new string(it->second);
+        delete (yyvsp[0].s);
+    }
 }
-#line 1364 "parser.tab.cpp"
+#line 1395 "parser.tab.cpp"
+    break;
+
+  case 8:
+#line 73 "parser.ypp"
+                 {
+    string *b = (yyvsp[-2].s);
+    
+    string c;
+    for (int i =0 ; i < (yyvsp[0].d); i++)
+        c+=*b;
+    (yyval.s) = new string(c);
+/*    
+    string a = "asdsad";
+    strinb */
+}
+#line 1411 "parser.tab.cpp"
+    break;
+
+  case 9:
+#line 84 "parser.ypp"
+                 {
+    string *b = (yyvsp[0].s);
+    
+    string c;
+    for (int i =0 ; i < (yyvsp[-2].d); i++)
+        c+=*b;
+    (yyval.s) = new string(c);
+/*    
+    string a = "asdsad";
+    strinb */
+}
+#line 1427 "parser.tab.cpp"
+    break;
+
+  case 10:
+#line 95 "parser.ypp"
+                 {
+    string *b = (yyvsp[-2].s);
+    string *a = (yyvsp[0].s);
+    string c = *b  + *a;
+    (yyval.s) = new string(c);
+}
+#line 1438 "parser.tab.cpp"
+    break;
+
+  case 11:
+#line 101 "parser.ypp"
+                         {
+    string *b = (yyvsp[-3].s);
+    
+    string c;
+    for (int i =0 ; i < (yyvsp[0].d); i++)
+        c+=*b;
+    (yyval.s) = new string(c);
+/*    
+    string a = "asdsad";
+    strinb */
+}
+#line 1454 "parser.tab.cpp"
+    break;
+
+  case 12:
+#line 112 "parser.ypp"
+                                 {
+    auto it = promenljive.find(*(yyvsp[-5].s));
+    
+    if (it == promenljive.end())
+    {
+        yyerror("failed");
+    }
+    else
+    {
+        string *b = new string(it->second);
+        
+        (yyval.s) = new string(b->substr((yyvsp[-3].d), (yyvsp[-1].d)));
+//         cout<<*b<<endl;
+//         $$ = b;
+    }
+}
+#line 1475 "parser.tab.cpp"
+    break;
+
+  case 13:
+#line 128 "parser.ypp"
+                            {
+  auto it = promenljive.find(*(yyvsp[-4].s));
+    
+    if (it == promenljive.end())
+    {
+        yyerror("failed");
+    }
+    else
+    {
+        string *b = new string(it->second);
+//         *b = *b + $3;
+        (yyval.s) = new string(b->substr((yyvsp[-2].d)));
+//         cout<<*b<<endl;
+//         $$ = b;
+    }
+
+}
+#line 1497 "parser.tab.cpp"
+    break;
+
+  case 14:
+#line 145 "parser.ypp"
+                            {
+  auto it = promenljive.find(*(yyvsp[-4].s));
+    
+    if (it == promenljive.end())
+    {
+        yyerror("failed");
+    }
+    else
+    {
+        string *b = new string(it->second);
+//         *b = *b + $3;
+        for (int i = 0; i < (yyvsp[-1].d); i++)
+            b->pop_back();
+        (yyval.s) = new string(b->substr(0, (yyvsp[-1].d)));
+//         cout<<*b<<endl;
+//         $$ = b;
+    }
+
+}
+#line 1521 "parser.tab.cpp"
+    break;
+
+  case 15:
+#line 164 "parser.ypp"
+                                {
+    
+    string b = (yyvsp[-1].s);
+    int i = 0;
+    while (b) 
+    {
+        char c = b[i];
+        b[i] = b->end() - i ;
+        b[b->end() - i] = c;
+    }
+    (yyval.s) = new string(*b);
+}
+#line 1538 "parser.tab.cpp"
     break;
 
 
-#line 1368 "parser.tab.cpp"
+#line 1542 "parser.tab.cpp"
 
       default: break;
     }
@@ -1596,7 +1770,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 63 "parser.ypp"
+#line 178 "parser.ypp"
 
 
 int main()

@@ -1,6 +1,7 @@
 Terminals unused in grammar
 
-    broj
+    lower_token
+    upper_token
 
 
 Grammar
@@ -11,39 +12,55 @@ Grammar
     2           | naredba '\n'
 
     3 naredba: id_token op_dodele izraz
-    4        | print_token '(' id_token ')'
-    5        | print_token '(' izraz ')'
+    4        | print_token '(' izraz ')'
 
-    6 izraz: niska_token
+    5 izraz: niska_token
+    6      | id_token
+    7      | izraz '*' broj
+    8      | broj '*' izraz
+    9      | izraz '+' izraz
+   10      | '(' izraz ')' '*' broj
+   11      | id_token '[' broj ':' broj ']'
+   12      | id_token '[' broj ':' ']'
+   13      | id_token '[' ':' broj ']'
+   14      | "reverse" '(' niska_token ')'
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     '\n' (10) 1 2
-    '(' (40) 4 5
-    ')' (41) 4 5
+    '(' (40) 4 10 14
+    ')' (41) 4 10 14
+    '*' (42) 7 8 10
+    '+' (43) 9
+    ':' (58) 11 12 13
+    '[' (91) 11 12 13
+    ']' (93) 11 12 13
     error (256)
-    niska_token <s> (258) 6
-    id_token <s> (259) 3 4
-    broj <d> (260)
-    print_token (261) 4 5
+    niska_token <s> (258) 5 14
+    id_token <s> (259) 3 6 11 12 13
+    broj <d> (260) 7 8 10 11 12 13
+    print_token (261) 4
     op_dodele (262) 3
+    lower_token (263)
+    upper_token (264)
+    "reverse" (265) 14
 
 
 Nonterminals, with rules where they appear
 
-    $accept (11)
+    $accept (19)
         on left: 0
-    NizNaredbi (12)
+    NizNaredbi (20)
         on left: 1 2
         on right: 0 1
-    naredba (13)
-        on left: 3 4 5
+    naredba (21)
+        on left: 3 4
         on right: 1 2
-    izraz <s> (14)
-        on left: 6
-        on right: 3 5
+    izraz <s> (22)
+        on left: 5 6 7 8 9 10 11 12 13 14
+        on right: 3 4 7 8 9 10
 
 
 State 0
@@ -66,8 +83,7 @@ State 1
 
 State 2
 
-    4 naredba: print_token . '(' id_token ')'
-    5        | print_token . '(' izraz ')'
+    4 naredba: print_token . '(' izraz ')'
 
     '('  shift, and go to state 6
 
@@ -96,19 +112,25 @@ State 5
     3 naredba: id_token op_dodele . izraz
 
     niska_token  shift, and go to state 10
+    id_token     shift, and go to state 11
+    broj         shift, and go to state 12
+    '('          shift, and go to state 13
+    "reverse"    shift, and go to state 14
 
-    izraz  go to state 11
+    izraz  go to state 15
 
 
 State 6
 
-    4 naredba: print_token '(' . id_token ')'
-    5        | print_token '(' . izraz ')'
+    4 naredba: print_token '(' . izraz ')'
 
     niska_token  shift, and go to state 10
-    id_token     shift, and go to state 12
+    id_token     shift, and go to state 11
+    broj         shift, and go to state 12
+    '('          shift, and go to state 13
+    "reverse"    shift, and go to state 14
 
-    izraz  go to state 13
+    izraz  go to state 16
 
 
 State 7
@@ -122,7 +144,7 @@ State 8
 
     1 NizNaredbi: NizNaredbi naredba . '\n'
 
-    '\n'  shift, and go to state 14
+    '\n'  shift, and go to state 17
 
 
 State 9
@@ -134,48 +156,262 @@ State 9
 
 State 10
 
-    6 izraz: niska_token .
+    5 izraz: niska_token .
 
-    $default  reduce using rule 6 (izraz)
+    $default  reduce using rule 5 (izraz)
 
 
 State 11
 
-    3 naredba: id_token op_dodele izraz .
+    6 izraz: id_token .
+   11      | id_token . '[' broj ':' broj ']'
+   12      | id_token . '[' broj ':' ']'
+   13      | id_token . '[' ':' broj ']'
 
-    $default  reduce using rule 3 (naredba)
+    '['  shift, and go to state 18
+
+    $default  reduce using rule 6 (izraz)
 
 
 State 12
 
-    4 naredba: print_token '(' id_token . ')'
+    8 izraz: broj . '*' izraz
 
-    ')'  shift, and go to state 15
+    '*'  shift, and go to state 19
 
 
 State 13
 
-    5 naredba: print_token '(' izraz . ')'
+   10 izraz: '(' . izraz ')' '*' broj
 
-    ')'  shift, and go to state 16
+    niska_token  shift, and go to state 10
+    id_token     shift, and go to state 11
+    broj         shift, and go to state 12
+    '('          shift, and go to state 13
+    "reverse"    shift, and go to state 14
+
+    izraz  go to state 20
 
 
 State 14
+
+   14 izraz: "reverse" . '(' niska_token ')'
+
+    '('  shift, and go to state 21
+
+
+State 15
+
+    3 naredba: id_token op_dodele izraz .
+    7 izraz: izraz . '*' broj
+    9      | izraz . '+' izraz
+
+    '*'  shift, and go to state 22
+    '+'  shift, and go to state 23
+
+    $default  reduce using rule 3 (naredba)
+
+
+State 16
+
+    4 naredba: print_token '(' izraz . ')'
+    7 izraz: izraz . '*' broj
+    9      | izraz . '+' izraz
+
+    '*'  shift, and go to state 22
+    '+'  shift, and go to state 23
+    ')'  shift, and go to state 24
+
+
+State 17
 
     1 NizNaredbi: NizNaredbi naredba '\n' .
 
     $default  reduce using rule 1 (NizNaredbi)
 
 
-State 15
+State 18
 
-    4 naredba: print_token '(' id_token ')' .
+   11 izraz: id_token '[' . broj ':' broj ']'
+   12      | id_token '[' . broj ':' ']'
+   13      | id_token '[' . ':' broj ']'
+
+    broj  shift, and go to state 25
+    ':'   shift, and go to state 26
+
+
+State 19
+
+    8 izraz: broj '*' . izraz
+
+    niska_token  shift, and go to state 10
+    id_token     shift, and go to state 11
+    broj         shift, and go to state 12
+    '('          shift, and go to state 13
+    "reverse"    shift, and go to state 14
+
+    izraz  go to state 27
+
+
+State 20
+
+    7 izraz: izraz . '*' broj
+    9      | izraz . '+' izraz
+   10      | '(' izraz . ')' '*' broj
+
+    '*'  shift, and go to state 22
+    '+'  shift, and go to state 23
+    ')'  shift, and go to state 28
+
+
+State 21
+
+   14 izraz: "reverse" '(' . niska_token ')'
+
+    niska_token  shift, and go to state 29
+
+
+State 22
+
+    7 izraz: izraz '*' . broj
+
+    broj  shift, and go to state 30
+
+
+State 23
+
+    9 izraz: izraz '+' . izraz
+
+    niska_token  shift, and go to state 10
+    id_token     shift, and go to state 11
+    broj         shift, and go to state 12
+    '('          shift, and go to state 13
+    "reverse"    shift, and go to state 14
+
+    izraz  go to state 31
+
+
+State 24
+
+    4 naredba: print_token '(' izraz ')' .
 
     $default  reduce using rule 4 (naredba)
 
 
-State 16
+State 25
 
-    5 naredba: print_token '(' izraz ')' .
+   11 izraz: id_token '[' broj . ':' broj ']'
+   12      | id_token '[' broj . ':' ']'
 
-    $default  reduce using rule 5 (naredba)
+    ':'  shift, and go to state 32
+
+
+State 26
+
+   13 izraz: id_token '[' ':' . broj ']'
+
+    broj  shift, and go to state 33
+
+
+State 27
+
+    7 izraz: izraz . '*' broj
+    8      | broj '*' izraz .
+    9      | izraz . '+' izraz
+
+    $default  reduce using rule 8 (izraz)
+
+
+State 28
+
+   10 izraz: '(' izraz ')' . '*' broj
+
+    '*'  shift, and go to state 34
+
+
+State 29
+
+   14 izraz: "reverse" '(' niska_token . ')'
+
+    ')'  shift, and go to state 35
+
+
+State 30
+
+    7 izraz: izraz '*' broj .
+
+    $default  reduce using rule 7 (izraz)
+
+
+State 31
+
+    7 izraz: izraz . '*' broj
+    9      | izraz . '+' izraz
+    9      | izraz '+' izraz .
+
+    $default  reduce using rule 9 (izraz)
+
+
+State 32
+
+   11 izraz: id_token '[' broj ':' . broj ']'
+   12      | id_token '[' broj ':' . ']'
+
+    broj  shift, and go to state 36
+    ']'   shift, and go to state 37
+
+
+State 33
+
+   13 izraz: id_token '[' ':' broj . ']'
+
+    ']'  shift, and go to state 38
+
+
+State 34
+
+   10 izraz: '(' izraz ')' '*' . broj
+
+    broj  shift, and go to state 39
+
+
+State 35
+
+   14 izraz: "reverse" '(' niska_token ')' .
+
+    $default  reduce using rule 14 (izraz)
+
+
+State 36
+
+   11 izraz: id_token '[' broj ':' broj . ']'
+
+    ']'  shift, and go to state 40
+
+
+State 37
+
+   12 izraz: id_token '[' broj ':' ']' .
+
+    $default  reduce using rule 12 (izraz)
+
+
+State 38
+
+   13 izraz: id_token '[' ':' broj ']' .
+
+    $default  reduce using rule 13 (izraz)
+
+
+State 39
+
+   10 izraz: '(' izraz ')' '*' broj .
+
+    $default  reduce using rule 10 (izraz)
+
+
+State 40
+
+   11 izraz: id_token '[' broj ':' broj ']' .
+
+    $default  reduce using rule 11 (izraz)

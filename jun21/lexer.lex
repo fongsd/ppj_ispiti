@@ -15,12 +15,17 @@
 %}
 
 %%
-
+"lower" {
+    return lower_token;
+}
+"upper" {
+    return upper_token;
+}
 "print" {
     return print_token;
 }
 (\"[^"]*\") {
-    yylval.s = new string(yytext);
+    yylval.s = new string(yytext + 1);
     return niska_token;
 }
 
@@ -28,12 +33,12 @@
     yylval.s = new string(yytext);
     return id_token;
 }
-[1-9][0-9]* {
+[0-9][0-9]* {
     yylval.d = atoi(yytext);
     return broj;
 }
 
-[)(+\n] {
+[)(+*\[\]:\n] {
     return *yytext;
 }
 

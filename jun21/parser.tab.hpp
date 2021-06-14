@@ -53,7 +53,9 @@ extern int yydebug;
     id_token = 259,
     broj = 260,
     print_token = 261,
-    op_dodele = 262
+    op_dodele = 262,
+    lower_token = 263,
+    upper_token = 264
   };
 #endif
 
@@ -66,7 +68,7 @@ union YYSTYPE
     string *s;
     int d;
 
-#line 70 "parser.tab.hpp"
+#line 72 "parser.tab.hpp"
 
 };
 typedef union YYSTYPE YYSTYPE;
