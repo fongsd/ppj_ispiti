@@ -2,7 +2,6 @@ Terminals unused in grammar
 
     right_shift
     list_id
-    rel_op
 
 
 Grammar
@@ -26,45 +25,53 @@ Grammar
    13      | id_token
    14      | izraz left_shift izraz
    15      | '(' izraz ')'
+   16      | '~' '(' izraz ')' ';'
+   17      | izraz rel_op izraz ';'
+   18      | izraz '&' izraz
+   19      | izraz '|' izraz
+   20      | izraz '=' izraz ';'
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     '\n' (10) 1 2
-    '(' (40) 5 15
-    ')' (41) 5 15
+    '&' (38) 18
+    '(' (40) 5 15 16
+    ')' (41) 5 15 16
     '*' (42) 11
     '+' (43) 9
     ',' (44) 5
     '-' (45) 10
     '/' (47) 12
-    ';' (59) 3 5 6 7
-    '=' (61) 3 7
+    ';' (59) 3 5 6 7 16 17 20
+    '=' (61) 3 7 20
+    '|' (124) 19
+    '~' (126) 16
     error (256)
-    left_shift (258) 14
-    right_shift (259)
-    broj <d> (260) 4 5 8
-    id_token <s> (261) 3 6 7 13
-    list_id <s> (262)
-    rel_op (263)
+    rel_op (258) 17
+    left_shift (259) 14
+    right_shift (260)
+    broj <d> (261) 4 5 8
+    id_token <s> (262) 3 6 7 13
+    list_id <s> (263)
     print_token (264) 5
     int_token (265) 3 6
 
 
 Nonterminals, with rules where they appear
 
-    $accept (21)
+    $accept (24)
         on left: 0
-    nizNaredbi (22)
+    nizNaredbi (25)
         on left: 1 2
         on right: 0 1
-    naredba (23)
+    naredba (26)
         on left: 3 4 5 6 7
         on right: 1 2
-    izraz <d> (24)
-        on left: 8 9 10 11 12 13 14 15
-        on right: 3 5 7 9 10 11 12 14 15
+    izraz <d> (27)
+        on left: 8 9 10 11 12 13 14 15 16 17 18 19 20
+        on right: 3 5 7 9 10 11 12 14 15 16 17 18 19 20
 
 
 State 0
@@ -137,8 +144,9 @@ State 7
     broj      shift, and go to state 13
     id_token  shift, and go to state 14
     '('       shift, and go to state 15
+    '~'       shift, and go to state 16
 
-    izraz  go to state 16
+    izraz  go to state 17
 
 
 State 8
@@ -148,8 +156,9 @@ State 8
     broj      shift, and go to state 13
     id_token  shift, and go to state 14
     '('       shift, and go to state 15
+    '~'       shift, and go to state 16
 
-    izraz  go to state 17
+    izraz  go to state 18
 
 
 State 9
@@ -157,8 +166,8 @@ State 9
     3 naredba: int_token id_token . '=' izraz ';'
     6        | int_token id_token . ';'
 
-    '='  shift, and go to state 18
-    ';'  shift, and go to state 19
+    '='  shift, and go to state 19
+    ';'  shift, and go to state 20
 
 
 State 10
@@ -172,7 +181,7 @@ State 11
 
     1 nizNaredbi: nizNaredbi naredba . '\n'
 
-    '\n'  shift, and go to state 20
+    '\n'  shift, and go to state 21
 
 
 State 12
@@ -203,11 +212,19 @@ State 15
     broj      shift, and go to state 13
     id_token  shift, and go to state 14
     '('       shift, and go to state 15
+    '~'       shift, and go to state 16
 
-    izraz  go to state 21
+    izraz  go to state 22
 
 
 State 16
+
+   16 izraz: '~' . '(' izraz ')' ';'
+
+    '('  shift, and go to state 23
+
+
+State 17
 
     7 naredba: id_token '=' izraz . ';'
     9 izraz: izraz . '+' izraz
@@ -215,16 +232,24 @@ State 16
    11      | izraz . '*' izraz
    12      | izraz . '/' izraz
    14      | izraz . left_shift izraz
+   17      | izraz . rel_op izraz ';'
+   18      | izraz . '&' izraz
+   19      | izraz . '|' izraz
+   20      | izraz . '=' izraz ';'
 
-    '+'         shift, and go to state 22
-    '-'         shift, and go to state 23
-    '*'         shift, and go to state 24
-    '/'         shift, and go to state 25
-    left_shift  shift, and go to state 26
-    ';'         shift, and go to state 27
+    '+'         shift, and go to state 24
+    '-'         shift, and go to state 25
+    '*'         shift, and go to state 26
+    '/'         shift, and go to state 27
+    '='         shift, and go to state 28
+    rel_op      shift, and go to state 29
+    '&'         shift, and go to state 30
+    '|'         shift, and go to state 31
+    left_shift  shift, and go to state 32
+    ';'         shift, and go to state 33
 
 
-State 17
+State 18
 
     5 naredba: print_token '(' izraz . ',' broj ')' ';'
     9 izraz: izraz . '+' izraz
@@ -232,41 +257,50 @@ State 17
    11      | izraz . '*' izraz
    12      | izraz . '/' izraz
    14      | izraz . left_shift izraz
+   17      | izraz . rel_op izraz ';'
+   18      | izraz . '&' izraz
+   19      | izraz . '|' izraz
+   20      | izraz . '=' izraz ';'
 
-    '+'         shift, and go to state 22
-    '-'         shift, and go to state 23
-    '*'         shift, and go to state 24
-    '/'         shift, and go to state 25
-    left_shift  shift, and go to state 26
-    ','         shift, and go to state 28
+    '+'         shift, and go to state 24
+    '-'         shift, and go to state 25
+    '*'         shift, and go to state 26
+    '/'         shift, and go to state 27
+    '='         shift, and go to state 28
+    rel_op      shift, and go to state 29
+    '&'         shift, and go to state 30
+    '|'         shift, and go to state 31
+    left_shift  shift, and go to state 32
+    ','         shift, and go to state 34
 
 
-State 18
+State 19
 
     3 naredba: int_token id_token '=' . izraz ';'
 
     broj      shift, and go to state 13
     id_token  shift, and go to state 14
     '('       shift, and go to state 15
+    '~'       shift, and go to state 16
 
-    izraz  go to state 29
+    izraz  go to state 35
 
 
-State 19
+State 20
 
     6 naredba: int_token id_token ';' .
 
     $default  reduce using rule 6 (naredba)
 
 
-State 20
+State 21
 
     1 nizNaredbi: nizNaredbi naredba '\n' .
 
     $default  reduce using rule 1 (nizNaredbi)
 
 
-State 21
+State 22
 
     9 izraz: izraz . '+' izraz
    10      | izraz . '-' izraz
@@ -274,85 +308,158 @@ State 21
    12      | izraz . '/' izraz
    14      | izraz . left_shift izraz
    15      | '(' izraz . ')'
+   17      | izraz . rel_op izraz ';'
+   18      | izraz . '&' izraz
+   19      | izraz . '|' izraz
+   20      | izraz . '=' izraz ';'
 
-    '+'         shift, and go to state 22
-    '-'         shift, and go to state 23
-    '*'         shift, and go to state 24
-    '/'         shift, and go to state 25
-    left_shift  shift, and go to state 26
-    ')'         shift, and go to state 30
+    '+'         shift, and go to state 24
+    '-'         shift, and go to state 25
+    '*'         shift, and go to state 26
+    '/'         shift, and go to state 27
+    '='         shift, and go to state 28
+    rel_op      shift, and go to state 29
+    '&'         shift, and go to state 30
+    '|'         shift, and go to state 31
+    left_shift  shift, and go to state 32
+    ')'         shift, and go to state 36
 
 
-State 22
+State 23
+
+   16 izraz: '~' '(' . izraz ')' ';'
+
+    broj      shift, and go to state 13
+    id_token  shift, and go to state 14
+    '('       shift, and go to state 15
+    '~'       shift, and go to state 16
+
+    izraz  go to state 37
+
+
+State 24
 
     9 izraz: izraz '+' . izraz
 
     broj      shift, and go to state 13
     id_token  shift, and go to state 14
     '('       shift, and go to state 15
+    '~'       shift, and go to state 16
 
-    izraz  go to state 31
+    izraz  go to state 38
 
 
-State 23
+State 25
 
    10 izraz: izraz '-' . izraz
 
     broj      shift, and go to state 13
     id_token  shift, and go to state 14
     '('       shift, and go to state 15
+    '~'       shift, and go to state 16
 
-    izraz  go to state 32
+    izraz  go to state 39
 
 
-State 24
+State 26
 
    11 izraz: izraz '*' . izraz
 
     broj      shift, and go to state 13
     id_token  shift, and go to state 14
     '('       shift, and go to state 15
+    '~'       shift, and go to state 16
 
-    izraz  go to state 33
+    izraz  go to state 40
 
 
-State 25
+State 27
 
    12 izraz: izraz '/' . izraz
 
     broj      shift, and go to state 13
     id_token  shift, and go to state 14
     '('       shift, and go to state 15
+    '~'       shift, and go to state 16
 
-    izraz  go to state 34
+    izraz  go to state 41
 
 
-State 26
+State 28
+
+   20 izraz: izraz '=' . izraz ';'
+
+    broj      shift, and go to state 13
+    id_token  shift, and go to state 14
+    '('       shift, and go to state 15
+    '~'       shift, and go to state 16
+
+    izraz  go to state 42
+
+
+State 29
+
+   17 izraz: izraz rel_op . izraz ';'
+
+    broj      shift, and go to state 13
+    id_token  shift, and go to state 14
+    '('       shift, and go to state 15
+    '~'       shift, and go to state 16
+
+    izraz  go to state 43
+
+
+State 30
+
+   18 izraz: izraz '&' . izraz
+
+    broj      shift, and go to state 13
+    id_token  shift, and go to state 14
+    '('       shift, and go to state 15
+    '~'       shift, and go to state 16
+
+    izraz  go to state 44
+
+
+State 31
+
+   19 izraz: izraz '|' . izraz
+
+    broj      shift, and go to state 13
+    id_token  shift, and go to state 14
+    '('       shift, and go to state 15
+    '~'       shift, and go to state 16
+
+    izraz  go to state 45
+
+
+State 32
 
    14 izraz: izraz left_shift . izraz
 
     broj      shift, and go to state 13
     id_token  shift, and go to state 14
     '('       shift, and go to state 15
+    '~'       shift, and go to state 16
 
-    izraz  go to state 35
+    izraz  go to state 46
 
 
-State 27
+State 33
 
     7 naredba: id_token '=' izraz ';' .
 
     $default  reduce using rule 7 (naredba)
 
 
-State 28
+State 34
 
     5 naredba: print_token '(' izraz ',' . broj ')' ';'
 
-    broj  shift, and go to state 36
+    broj  shift, and go to state 47
 
 
-State 29
+State 35
 
     3 naredba: int_token id_token '=' izraz . ';'
     9 izraz: izraz . '+' izraz
@@ -360,23 +467,56 @@ State 29
    11      | izraz . '*' izraz
    12      | izraz . '/' izraz
    14      | izraz . left_shift izraz
+   17      | izraz . rel_op izraz ';'
+   18      | izraz . '&' izraz
+   19      | izraz . '|' izraz
+   20      | izraz . '=' izraz ';'
 
-    '+'         shift, and go to state 22
-    '-'         shift, and go to state 23
-    '*'         shift, and go to state 24
-    '/'         shift, and go to state 25
-    left_shift  shift, and go to state 26
-    ';'         shift, and go to state 37
+    '+'         shift, and go to state 24
+    '-'         shift, and go to state 25
+    '*'         shift, and go to state 26
+    '/'         shift, and go to state 27
+    '='         shift, and go to state 28
+    rel_op      shift, and go to state 29
+    '&'         shift, and go to state 30
+    '|'         shift, and go to state 31
+    left_shift  shift, and go to state 32
+    ';'         shift, and go to state 48
 
 
-State 30
+State 36
 
    15 izraz: '(' izraz ')' .
 
     $default  reduce using rule 15 (izraz)
 
 
-State 31
+State 37
+
+    9 izraz: izraz . '+' izraz
+   10      | izraz . '-' izraz
+   11      | izraz . '*' izraz
+   12      | izraz . '/' izraz
+   14      | izraz . left_shift izraz
+   16      | '~' '(' izraz . ')' ';'
+   17      | izraz . rel_op izraz ';'
+   18      | izraz . '&' izraz
+   19      | izraz . '|' izraz
+   20      | izraz . '=' izraz ';'
+
+    '+'         shift, and go to state 24
+    '-'         shift, and go to state 25
+    '*'         shift, and go to state 26
+    '/'         shift, and go to state 27
+    '='         shift, and go to state 28
+    rel_op      shift, and go to state 29
+    '&'         shift, and go to state 30
+    '|'         shift, and go to state 31
+    left_shift  shift, and go to state 32
+    ')'         shift, and go to state 49
+
+
+State 38
 
     9 izraz: izraz . '+' izraz
     9      | izraz '+' izraz .
@@ -384,15 +524,23 @@ State 31
    11      | izraz . '*' izraz
    12      | izraz . '/' izraz
    14      | izraz . left_shift izraz
+   17      | izraz . rel_op izraz ';'
+   18      | izraz . '&' izraz
+   19      | izraz . '|' izraz
+   20      | izraz . '=' izraz ';'
 
-    '*'         shift, and go to state 24
-    '/'         shift, and go to state 25
-    left_shift  shift, and go to state 26
+    '*'         shift, and go to state 26
+    '/'         shift, and go to state 27
+    '='         shift, and go to state 28
+    rel_op      shift, and go to state 29
+    '&'         shift, and go to state 30
+    '|'         shift, and go to state 31
+    left_shift  shift, and go to state 32
 
     $default  reduce using rule 9 (izraz)
 
 
-State 32
+State 39
 
     9 izraz: izraz . '+' izraz
    10      | izraz . '-' izraz
@@ -400,15 +548,23 @@ State 32
    11      | izraz . '*' izraz
    12      | izraz . '/' izraz
    14      | izraz . left_shift izraz
+   17      | izraz . rel_op izraz ';'
+   18      | izraz . '&' izraz
+   19      | izraz . '|' izraz
+   20      | izraz . '=' izraz ';'
 
-    '*'         shift, and go to state 24
-    '/'         shift, and go to state 25
-    left_shift  shift, and go to state 26
+    '*'         shift, and go to state 26
+    '/'         shift, and go to state 27
+    '='         shift, and go to state 28
+    rel_op      shift, and go to state 29
+    '&'         shift, and go to state 30
+    '|'         shift, and go to state 31
+    left_shift  shift, and go to state 32
 
     $default  reduce using rule 10 (izraz)
 
 
-State 33
+State 40
 
     9 izraz: izraz . '+' izraz
    10      | izraz . '-' izraz
@@ -416,13 +572,21 @@ State 33
    11      | izraz '*' izraz .
    12      | izraz . '/' izraz
    14      | izraz . left_shift izraz
+   17      | izraz . rel_op izraz ';'
+   18      | izraz . '&' izraz
+   19      | izraz . '|' izraz
+   20      | izraz . '=' izraz ';'
 
-    left_shift  shift, and go to state 26
+    '='         shift, and go to state 28
+    rel_op      shift, and go to state 29
+    '&'         shift, and go to state 30
+    '|'         shift, and go to state 31
+    left_shift  shift, and go to state 32
 
     $default  reduce using rule 11 (izraz)
 
 
-State 34
+State 41
 
     9 izraz: izraz . '+' izraz
    10      | izraz . '-' izraz
@@ -430,13 +594,107 @@ State 34
    12      | izraz . '/' izraz
    12      | izraz '/' izraz .
    14      | izraz . left_shift izraz
+   17      | izraz . rel_op izraz ';'
+   18      | izraz . '&' izraz
+   19      | izraz . '|' izraz
+   20      | izraz . '=' izraz ';'
 
-    left_shift  shift, and go to state 26
+    '='         shift, and go to state 28
+    rel_op      shift, and go to state 29
+    '&'         shift, and go to state 30
+    '|'         shift, and go to state 31
+    left_shift  shift, and go to state 32
 
     $default  reduce using rule 12 (izraz)
 
 
-State 35
+State 42
+
+    9 izraz: izraz . '+' izraz
+   10      | izraz . '-' izraz
+   11      | izraz . '*' izraz
+   12      | izraz . '/' izraz
+   14      | izraz . left_shift izraz
+   17      | izraz . rel_op izraz ';'
+   18      | izraz . '&' izraz
+   19      | izraz . '|' izraz
+   20      | izraz . '=' izraz ';'
+   20      | izraz '=' izraz . ';'
+
+    '+'         shift, and go to state 24
+    '-'         shift, and go to state 25
+    '*'         shift, and go to state 26
+    '/'         shift, and go to state 27
+    '='         shift, and go to state 28
+    rel_op      shift, and go to state 29
+    '&'         shift, and go to state 30
+    '|'         shift, and go to state 31
+    left_shift  shift, and go to state 32
+    ';'         shift, and go to state 50
+
+
+State 43
+
+    9 izraz: izraz . '+' izraz
+   10      | izraz . '-' izraz
+   11      | izraz . '*' izraz
+   12      | izraz . '/' izraz
+   14      | izraz . left_shift izraz
+   17      | izraz . rel_op izraz ';'
+   17      | izraz rel_op izraz . ';'
+   18      | izraz . '&' izraz
+   19      | izraz . '|' izraz
+   20      | izraz . '=' izraz ';'
+
+    '+'         shift, and go to state 24
+    '-'         shift, and go to state 25
+    '*'         shift, and go to state 26
+    '/'         shift, and go to state 27
+    '='         shift, and go to state 28
+    rel_op      shift, and go to state 29
+    '&'         shift, and go to state 30
+    '|'         shift, and go to state 31
+    left_shift  shift, and go to state 32
+    ';'         shift, and go to state 51
+
+
+State 44
+
+    9 izraz: izraz . '+' izraz
+   10      | izraz . '-' izraz
+   11      | izraz . '*' izraz
+   12      | izraz . '/' izraz
+   14      | izraz . left_shift izraz
+   17      | izraz . rel_op izraz ';'
+   18      | izraz . '&' izraz
+   18      | izraz '&' izraz .
+   19      | izraz . '|' izraz
+   20      | izraz . '=' izraz ';'
+
+    left_shift  shift, and go to state 32
+
+    $default  reduce using rule 18 (izraz)
+
+
+State 45
+
+    9 izraz: izraz . '+' izraz
+   10      | izraz . '-' izraz
+   11      | izraz . '*' izraz
+   12      | izraz . '/' izraz
+   14      | izraz . left_shift izraz
+   17      | izraz . rel_op izraz ';'
+   18      | izraz . '&' izraz
+   19      | izraz . '|' izraz
+   19      | izraz '|' izraz .
+   20      | izraz . '=' izraz ';'
+
+    left_shift  shift, and go to state 32
+
+    $default  reduce using rule 19 (izraz)
+
+
+State 46
 
     9 izraz: izraz . '+' izraz
    10      | izraz . '-' izraz
@@ -444,32 +702,64 @@ State 35
    12      | izraz . '/' izraz
    14      | izraz . left_shift izraz
    14      | izraz left_shift izraz .
+   17      | izraz . rel_op izraz ';'
+   18      | izraz . '&' izraz
+   19      | izraz . '|' izraz
+   20      | izraz . '=' izraz ';'
 
     $default  reduce using rule 14 (izraz)
 
 
-State 36
+State 47
 
     5 naredba: print_token '(' izraz ',' broj . ')' ';'
 
-    ')'  shift, and go to state 38
+    ')'  shift, and go to state 52
 
 
-State 37
+State 48
 
     3 naredba: int_token id_token '=' izraz ';' .
 
     $default  reduce using rule 3 (naredba)
 
 
-State 38
+State 49
+
+   16 izraz: '~' '(' izraz ')' . ';'
+
+    ';'  shift, and go to state 53
+
+
+State 50
+
+   20 izraz: izraz '=' izraz ';' .
+
+    $default  reduce using rule 20 (izraz)
+
+
+State 51
+
+   17 izraz: izraz rel_op izraz ';' .
+
+    $default  reduce using rule 17 (izraz)
+
+
+State 52
 
     5 naredba: print_token '(' izraz ',' broj ')' . ';'
 
-    ';'  shift, and go to state 39
+    ';'  shift, and go to state 54
 
 
-State 39
+State 53
+
+   16 izraz: '~' '(' izraz ')' ';' .
+
+    $default  reduce using rule 16 (izraz)
+
+
+State 54
 
     5 naredba: print_token '(' izraz ',' broj ')' ';' .
 

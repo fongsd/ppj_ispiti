@@ -49,10 +49,11 @@
 %left '+' '-';
 %left '*' '/';
 %left '=';
+%left rel_op '&' '|';
 %left left_shift right_shift;
 %token <d> broj;
 %token <s> id_token list_id;
-%token left_shift right_shift rel_op print_token int_token;
+%token left_shift right_shift print_token int_token;
 
 %type <d> izraz;
 %%
@@ -128,6 +129,21 @@ izraz: broj {
 | '~' '(' izraz ')' ';'
 {
     $$ = ~$3;
+}
+| izraz rel_op izraz ';' {
+    if ($1 == $3)
+        cout<<"True!\n";
+    else
+        cout<<"False!\n";
+}
+| izraz '&' izraz {
+    $$ = $1 & $3;
+}
+| izraz '|' izraz {
+    $$ = $1 | $3;
+}
+| izraz '=' izraz ';' {
+    $1 = $3;
 }
 %%
 

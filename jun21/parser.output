@@ -1,0 +1,181 @@
+Terminals unused in grammar
+
+    broj
+
+
+Grammar
+
+    0 $accept: NizNaredbi $end
+
+    1 NizNaredbi: NizNaredbi naredba '\n'
+    2           | naredba '\n'
+
+    3 naredba: id_token op_dodele izraz
+    4        | print_token '(' id_token ')'
+    5        | print_token '(' izraz ')'
+
+    6 izraz: niska_token
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    '\n' (10) 1 2
+    '(' (40) 4 5
+    ')' (41) 4 5
+    error (256)
+    niska_token <s> (258) 6
+    id_token <s> (259) 3 4
+    broj <d> (260)
+    print_token (261) 4 5
+    op_dodele (262) 3
+
+
+Nonterminals, with rules where they appear
+
+    $accept (11)
+        on left: 0
+    NizNaredbi (12)
+        on left: 1 2
+        on right: 0 1
+    naredba (13)
+        on left: 3 4 5
+        on right: 1 2
+    izraz <s> (14)
+        on left: 6
+        on right: 3 5
+
+
+State 0
+
+    0 $accept: . NizNaredbi $end
+
+    id_token     shift, and go to state 1
+    print_token  shift, and go to state 2
+
+    NizNaredbi  go to state 3
+    naredba     go to state 4
+
+
+State 1
+
+    3 naredba: id_token . op_dodele izraz
+
+    op_dodele  shift, and go to state 5
+
+
+State 2
+
+    4 naredba: print_token . '(' id_token ')'
+    5        | print_token . '(' izraz ')'
+
+    '('  shift, and go to state 6
+
+
+State 3
+
+    0 $accept: NizNaredbi . $end
+    1 NizNaredbi: NizNaredbi . naredba '\n'
+
+    $end         shift, and go to state 7
+    id_token     shift, and go to state 1
+    print_token  shift, and go to state 2
+
+    naredba  go to state 8
+
+
+State 4
+
+    2 NizNaredbi: naredba . '\n'
+
+    '\n'  shift, and go to state 9
+
+
+State 5
+
+    3 naredba: id_token op_dodele . izraz
+
+    niska_token  shift, and go to state 10
+
+    izraz  go to state 11
+
+
+State 6
+
+    4 naredba: print_token '(' . id_token ')'
+    5        | print_token '(' . izraz ')'
+
+    niska_token  shift, and go to state 10
+    id_token     shift, and go to state 12
+
+    izraz  go to state 13
+
+
+State 7
+
+    0 $accept: NizNaredbi $end .
+
+    $default  accept
+
+
+State 8
+
+    1 NizNaredbi: NizNaredbi naredba . '\n'
+
+    '\n'  shift, and go to state 14
+
+
+State 9
+
+    2 NizNaredbi: naredba '\n' .
+
+    $default  reduce using rule 2 (NizNaredbi)
+
+
+State 10
+
+    6 izraz: niska_token .
+
+    $default  reduce using rule 6 (izraz)
+
+
+State 11
+
+    3 naredba: id_token op_dodele izraz .
+
+    $default  reduce using rule 3 (naredba)
+
+
+State 12
+
+    4 naredba: print_token '(' id_token . ')'
+
+    ')'  shift, and go to state 15
+
+
+State 13
+
+    5 naredba: print_token '(' izraz . ')'
+
+    ')'  shift, and go to state 16
+
+
+State 14
+
+    1 NizNaredbi: NizNaredbi naredba '\n' .
+
+    $default  reduce using rule 1 (NizNaredbi)
+
+
+State 15
+
+    4 naredba: print_token '(' id_token ')' .
+
+    $default  reduce using rule 4 (naredba)
+
+
+State 16
+
+    5 naredba: print_token '(' izraz ')' .
+
+    $default  reduce using rule 5 (naredba)

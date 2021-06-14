@@ -49,14 +49,11 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    rel_op = 258,
-    left_shift = 259,
-    right_shift = 260,
-    broj = 261,
-    id_token = 262,
-    list_id = 263,
-    print_token = 264,
-    int_token = 265
+    niska_token = 258,
+    id_token = 259,
+    broj = 260,
+    print_token = 261,
+    op_dodele = 262
   };
 #endif
 
@@ -64,13 +61,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 43 "parser.ypp"
+#line 21 "parser.ypp"
 
     string *s;
     int d;
-    vector<int>* elementi;
 
-#line 74 "parser.tab.hpp"
+#line 70 "parser.tab.hpp"
 
 };
 typedef union YYSTYPE YYSTYPE;
