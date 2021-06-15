@@ -15,6 +15,10 @@
 %}
 
 %%
+"reverse" {
+    return reverse_token;
+}
+
 "lower" {
     return lower_token;
 }

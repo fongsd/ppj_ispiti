@@ -23,7 +23,7 @@
     int d;
 }
 
-%token <s> niska_token id_token;
+%token <s> niska_token id_token reverse_token;
 %token <d> broj;
 %token print_token op_dodele lower_token upper_token;
 %type <s> izraz;
@@ -161,17 +161,30 @@ izraz: niska_token {
     }
 
 }
-| "reverse" '(' niska_token ')' {
-    
-    string b = $3;
-    int i = 0;
-    while (b) 
-    {
-        char c = b[i];
-        b[i] = b->end() - i ;
-        b[b->end() - i] = c;
-    }
-    $$ = new string(*b);
+| reverse_token '(' niska_token ')' {
+        string *b = new string(*$3);
+        string *c = new string();
+        
+        int i = b->length()-1;
+        b->pop_back();
+        while (i > 1)
+        {
+            if (b->length() == 1 )
+                {
+                    cout<<"kraj";
+                    break;
+                }
+            char a = b->back();
+            cout<<a<<endl;
+            b->pop_back();
+            
+//             c->append(b->back());
+//             b->pop_back();
+            i--;
+            
+        }
+        $$ = 0;
+//         cout<<*c<<en`cleardl;
 }
 ;
 
